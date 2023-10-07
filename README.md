@@ -1,4 +1,4 @@
-# Additive-Manufacturing-Sensor-Selection
+# Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion
 Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in LPBF Process
 
 
