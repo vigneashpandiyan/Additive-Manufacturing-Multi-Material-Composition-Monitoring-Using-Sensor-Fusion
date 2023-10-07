@@ -20,7 +20,8 @@ In summary, this research has centered on the analysis of AE signals and the int
 •	Combining a contrastive learner with a sensor fusion strategy has proven to be valuable for monitoring the LPBF process involving multiple materials. When visualizing the lower-level embedded space of the CNN models trained using the two contrastive loss functions, it became evident that the multivariate data streams corresponding to the five compositions could be grouped together based on their similarities. 
 •	Using learned representations from two CNN models as input for XGBoost-based classification yielded higher accuracy than conventional CNN training. This highlights the potential of feature representations from contrastive learning methods for monitoring tasks. 
 
-![image](https://github.com/vigneashpandiyan/Additive-Manufacturing-Transfer-Learning/assets/39007209/de11305c-119f-4269-b271-8a4847f59e1c)
+![image](https://github.com/vigneashpandiyan/Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion/assets/39007209/e4834045-02e1-491e-81e3-2f4d62a7c3c3)
+
 
 
 # Code
@@ -33,8 +34,8 @@ python Main.py
 # Citation
 ```
 @article{PANDIYAN2023118144,
-title = {Optimizing In-situ Monitoring for Laser Powder Bed Fusion Process: Deciphering Acoustic Emission and Sensor Sensitivity with Explainable Machine Learning},
-journal = {Journal of Materials Processing Technology},
+title = {Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in LPBF Process},
+journal = {Journal of Manufacturing Processes},
 pages = {118144},
 year = {2023},
 issn = {0924-0136},
