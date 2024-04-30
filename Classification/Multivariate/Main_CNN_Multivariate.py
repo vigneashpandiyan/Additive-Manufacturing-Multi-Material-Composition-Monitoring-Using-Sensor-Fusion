@@ -77,7 +77,6 @@ torch.save(model.state_dict(), PATH)
 torch.save(model, PATH)
 model = torch.load(PATH)
 
-
 correctHits = 0
 total = 0
 for batches in testset:
@@ -89,10 +88,11 @@ for batches in testset:
     total += output.size(0)
     correctHits += (prediction == output).sum().item()
 
-
 print('Accuracy = '+str((correctHits/total)*100))
 print('Finished Training')
 
+#%%
+# Plotting the confusion matrix and the training loss, learning rate and accuracy
 folder_created = os.path.join('Figures/', str(Material_1)+str(Material_2))
 print(folder_created)
 try:
@@ -104,10 +104,6 @@ plt.rcParams.update(plt.rcParamsDefault)
 plots(iteration, Loss_value, Total_Epoch, Accuracy, Learning_rate,
       Training_loss_mean, Training_loss_std, folder_created)
 count_parameters(net)
-
-# %%
-
-# ('1','2','3','4','5','6', '7','8', '9','10')#('1-2','3-4','5-6', '7-8', '9-10')
-classes = ('1', '2', '3', '4', '5')
+classes = ('1', '2', '3', '4', '5') # Change the classes based on the dataset
 plotname = 'Multi_variate'+'_confusion_matrix'+'.png'
 plot_confusion_matrix(model, testset, classes, device, plotname)

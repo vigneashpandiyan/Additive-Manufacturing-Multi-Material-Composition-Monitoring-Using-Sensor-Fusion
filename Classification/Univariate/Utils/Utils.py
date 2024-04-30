@@ -16,6 +16,19 @@ import pandas as pd
 
 
 def plot_confusion_matrix(model, testset, classes, device, plotname):
+    """
+    Plots the confusion matrix for a given model on a test set.
+
+    Args:
+        model (torch.nn.Module): The trained model.
+        testset (torch.utils.data.Dataset): The test set.
+        classes (list): The list of class labels.
+        device (torch.device): The device to run the model on.
+        plotname (str): The name of the plot file to save.
+
+    Returns:
+        None
+    """
 
     y_pred = []
     y_true = []
@@ -59,9 +72,24 @@ def plot_confusion_matrix(model, testset, classes, device, plotname):
 
 
 def plots(iteration, Loss_value, Total_Epoch, Accuracy, Learning_rate, Training_loss_mean, Training_loss_std, Material):
+    """
+    Plots the training loss, training accuracy, and learning rate over epochs.
+
+    Args:
+        iteration (int): The current iteration.
+        Loss_value (numpy.ndarray): The loss values for each epoch.
+        Total_Epoch (numpy.ndarray): The total number of epochs.
+        Accuracy (numpy.ndarray): The training accuracy for each epoch.
+        Learning_rate (numpy.ndarray): The learning rate for each epoch.
+        Training_loss_mean (numpy.ndarray): The mean training loss for each epoch.
+        Training_loss_std (numpy.ndarray): The standard deviation of training loss for each epoch.
+        Material (str): The material name.
+
+    Returns:
+        None
+    """
 
     Accuracyfile = str(Material)+'Accuracy'+'.npy'
-    Lossfile = str(Material)+'Loss_value'+'.npy'
     np.save(Accuracyfile, Accuracy, allow_pickle=True)
     np.save(Lossfile, Loss_value, allow_pickle=True)
 
@@ -128,6 +156,15 @@ def plots(iteration, Loss_value, Total_Epoch, Accuracy, Learning_rate, Training_
 
 
 def count_parameters(model):
+    """
+    Counts the total number of trainable parameters in a given model.
+    
+    Args:
+        model (torch.nn.Module): The model for which the parameters need to be counted.
+        
+    Returns:
+        int: The total number of trainable parameters in the model.
+    """
     table = PrettyTable(["Modules", "Parameters"])
     total_params = 0
     for name, parameter in model.named_parameters():

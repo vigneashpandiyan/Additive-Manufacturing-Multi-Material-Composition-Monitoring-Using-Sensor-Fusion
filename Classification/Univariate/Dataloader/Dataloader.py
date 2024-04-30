@@ -1,48 +1,82 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Aug 10 21:33:51 2023
 
 @author: srpv
-"""
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
 
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
+"""
+#%% Libraries required:
 import torch
 from torch.utils.data import Dataset
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import train_test_split  # implementing train-test-split
 import os
 
 
 class Mechanism(Dataset):
+    """
+    A custom dataset class for handling sequences and labels.
+
+    Args:
+        sequences (list): A list of tuples containing two sequences and a label.
+
+    Returns:
+        tuple: A tuple containing the concatenated sequence and the label in the tensor format.
+    """
 
     def __init__(self, sequences):
         self.sequences = sequences
 
     def __len__(self):
-
         return len(self.sequences)
 
     def __getitem__(self, idx):
-
-        sequence, label = self.sequences[idx]
-        sequence = torch.Tensor(sequence)
-        sequence = sequence.view(1, -1)
+        sequence_1, sequence_2, label = self.sequences[idx]
+        sequence_1 = torch.Tensor(sequence_1)
+        sequence_2 = torch.Tensor(sequence_2)
+        sequence1 = sequence_1.view(1, -1)
+        sequence2 = sequence_2.view(1, -1)
+        sequence = torch.cat((sequence1, sequence2), 0)
         label = torch.tensor(label).long()
-        sequence, label
         return sequence, label
 
 
 def dataprocessing(df):
+    """
+    Preprocesses the input dataframe by standardizing the values.
+
+    Args:
+        df (pandas.DataFrame): The input dataframe.
+
+    Returns:
+        pandas.DataFrame: The preprocessed dataframe with standardized values.
+    """
     database = df
     print(database.shape)
     database = database.apply(lambda x: (x - np.mean(x))/np.std(x), axis=1)
-    # anomaly_database=anomaly_database.to_numpy().astype(np.float64)
     return database
 
 
-def data_pipeline(Material, total_path):
-    windowsize = 5000
-    classfile = str(Material)+'_classspace'+'_' + str(windowsize)+'.npy'
-    rawfile = str(Material)+'_rawspace'+'_' + str(windowsize)+'.npy'
+def data_pipeline(Material, total_path, windowsize):
+    """
+    Process the data for a given material.
+
+    Args:
+        Material (str): The name of the material.
+        total_path (str): The total path to the data files.
+        windowsize (int): The window size for processing the data.
+
+    Returns:
+        tuple: A tuple containing the processed rawspace and classspace arrays.
+    """
+    classfile = str(Material) + '_classspace' + '_' + str(windowsize) + '.npy'
+    rawfile = str(Material) + '_rawspace' + '_' + str(windowsize) + '.npy'
     classfile = (os.path.join(total_path, classfile))
     rawfile = (os.path.join(total_path, rawfile))
 
@@ -51,21 +85,11 @@ def data_pipeline(Material, total_path):
     rawspace = np.load(rawfile).astype(np.float64)
     rawspace = pd.DataFrame(rawspace)
     rawspace = dataprocessing(rawspace)
-    # rawspace =rawspace.to_numpy()
 
     rawspace = pd.DataFrame(rawspace)
     classspace = pd.DataFrame(classspace)
     classspace.columns = ['Categorical']
     data = pd.concat([rawspace, classspace], axis=1)
-
-    print("respective windows", data.Categorical.value_counts())
-    minval = min(data.Categorical.value_counts())
-
-    print("windows of the class: ", minval)
-
-    data = pd.concat([data[data.Categorical == cat].head(minval)
-                     for cat in data.Categorical.unique()])
-    print("The dataset is well balanced: ", data.Categorical.value_counts())
 
     rawspace = data.iloc[:, :-1]
     classspace = data.iloc[:, -1]
@@ -77,6 +101,18 @@ def data_pipeline(Material, total_path):
 
 
 def Data_torch(classspace, Featurespace):
+    
+    
+    """
+    Preprocesses the data and creates train and test sets for PyTorch DataLoader.
+
+    Args:
+        classspace (numpy.ndarray): The categorical labels for the data.
+        Featurespace (numpy.ndarray): The first set of features.
+        
+    Returns:
+        tuple: A tuple containing the train and test sets as PyTorch DataLoader objects.
+    """
 
     df2 = pd.DataFrame(classspace)
     df2.columns = ['Categorical']
@@ -105,3 +141,7 @@ def Data_torch(classspace, Featurespace):
     sequences = Mechanism(sequences)
 
     return sequences
+
+
+
+

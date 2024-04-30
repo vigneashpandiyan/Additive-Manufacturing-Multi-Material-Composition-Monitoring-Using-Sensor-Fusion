@@ -1,15 +1,33 @@
-# -*- coding: utf-8 -*-
 """
-Created on Thu Aug 10 21:14:18 2023
 
 @author: srpv
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
+
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
 """
+#%% Libraries required:
 import torch
 from torch import nn, optim
 from torch.nn import functional as F
 
 
 class CNN(nn.Module):
+    """
+    Convolutional Neural Network (CNN) model for classification.
+
+    Args:
+        classes (int): Number of output classes.
+        embedding_dims (int): Dimensionality of the embedding layer.
+        dropout_rate (float): Dropout rate for regularization.
+
+    Returns:
+        torch.Tensor: Output tensor of shape (batch_size, classes).
+    """
+
     def __init__(self, classes, embedding_dims, dropout_rate):
         super(CNN, self).__init__()
 
@@ -38,41 +56,37 @@ class CNN(nn.Module):
         self.dropout = nn.Dropout(dropout_rate)
 
     def forward(self, x):
-        # print(x.shape)
+        """
+        Forward pass of the CNN model.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, input_channels, sequence_length).
+
+        Returns:
+            torch.Tensor: Output tensor of shape (batch_size, classes).
+        """
         x = F.relu(self.bn1(self.conv1(x)))
         x = self.dropout(x)
-        # print(x.shape)
         x = self.pool(x)
-        # print(x.shape)
 
         x = F.relu(self.bn2(self.conv2(x)))
         x = self.dropout(x)
-        # print(x.shape)
         x = self.pool(x)
-        # print(x.shape)
 
         x = F.relu(self.bn3(self.conv3(x)))
         x = self.dropout(x)
-        # print(x.shape)
         x = self.pool(x)
-        # print(x.shape)
 
         x = F.relu(self.bn4(self.conv4(x)))
         x = self.dropout(x)
-        # print(x.shape)
         x = self.pool(x)
-        # print(x.shape)
 
         x = F.relu(self.bn5(self.conv5(x)))
-        # print(x.shape)
         x = self.pool(x)
-        # print(x.shape)
 
         x = x.view(-1, 832)
-        # print(x.shape)
 
         x = self.fc1(x)
-        # print(x.shape)
         x = self.fc2(x)
         x = self.fc3(x)
 
