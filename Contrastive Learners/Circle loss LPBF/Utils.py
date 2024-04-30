@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 29 01:19:48 2021
-
 @author: srpv
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
+
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
 """
+#libraries to import
 import matplotlib.pyplot as plt
 import numpy as np
 from prettytable import PrettyTable
@@ -17,13 +23,41 @@ from tqdm.notebook import tqdm
 from Dataloader import *
 from torchvision import transforms
 
+#%%
+colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
+          '#9467bd', '#8c564b', '#e377c2', '#7f7f7f',
+          '#bcbd22', '#17becf']
+marker = ["*", ">", "X", "o", "s"]
+colors = ['blue', 'g', 'red', 'orange', 'purple']
+mnist_classes = ['20%-Cu', '40%-Cu', '60%-Cu', '80%-Cu', '100%-Cu']
 
+graph_title = "Feature space distribution"
+
+#%%
 def init_weights(m):
+    """
+    Initializes the weights of a convolutional layer using the Kaiming normal initialization.
+
+    Args:
+        m (nn.Conv1d): The convolutional layer to initialize.
+
+    Returns:
+        None
+    """
     if isinstance(m, nn.Conv1d):
         torch.nn.init.kaiming_normal_(m.weight)
 
-
+#%%
 def count_parameters(model):
+    """
+    Counts the total number of trainable parameters in a given model.
+    
+    Args:
+        model (torch.nn.Module): The model for which the parameters need to be counted.
+        
+    Returns:
+        int: The total number of trainable parameters in the model.
+    """
     table = PrettyTable(["Modules", "Parameters"])
     total_params = 0
     for name, parameter in model.named_parameters():
@@ -36,18 +70,21 @@ def count_parameters(model):
     print(f"Total Trainable Params: {total_params}")
     return total_params
 
-
-colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
-          '#9467bd', '#8c564b', '#e377c2', '#7f7f7f',
-          '#bcbd22', '#17becf']
-marker = ["*", ">", "X", "o", "s"]
-colors = ['blue', 'g', 'red', 'orange', 'purple']
-mnist_classes = ['20%-Cu', '40%-Cu', '60%-Cu', '80%-Cu', '100%-Cu']
-
-graph_title = "Feature space distribution"
-
-
+#%%
 def plot_embeddings(embeddings, targets, graph_name_2D, xlim=None, ylim=None):
+    """
+    Plots the embeddings in a 2D graph.
+
+    Args:
+        embeddings (numpy array): The embeddings to be plotted.
+        targets (numpy array): The corresponding targets for each embedding.
+        graph_name_2D (string): The name of the output graph file.
+        xlim (tuple, optional): The x-axis limits for the plot.
+        ylim (tuple, optional): The y-axis limits for the plot.
+
+    Returns:
+        None
+    """
     plt.rcParams.update(plt.rcParamsDefault)
     plt.figure(figsize=(7, 5))
     count = 0
@@ -67,9 +104,22 @@ def plot_embeddings(embeddings, targets, graph_name_2D, xlim=None, ylim=None):
     plt.savefig(graph_name_2D, bbox_inches='tight', dpi=600)
     plt.show()
 
-
+#%%
 def plot_embeddings_reduced(embeddings, targets, graph_name_2D, test_size, xlim=None, ylim=None):
+    """
+    Plots the reduced embeddings in a 2D graph.
 
+    Parameters:
+    - embeddings (array-like): The embeddings to be plotted.
+    - targets (array-like): The corresponding targets for each embedding.
+    - graph_name_2D (str): The name of the output graph file.
+    - test_size (float): The proportion of data to be used for testing.
+    - xlim (tuple, optional): The limits for the x-axis.
+    - ylim (tuple, optional): The limits for the y-axis.
+
+    Returns:
+    None
+    """
     embeddings, _, targets, _ = train_test_split(
         embeddings, targets, test_size=test_size, random_state=66)
     plt.rcParams.update(plt.rcParamsDefault)
@@ -91,9 +141,23 @@ def plot_embeddings_reduced(embeddings, targets, graph_name_2D, test_size, xlim=
     plt.savefig(graph_name_2D, bbox_inches='tight', dpi=600)
     plt.show()
 
-
+#%%
 def TSNEplot(z_run, test_labels, graph_name, test_size, ang, perplexity):
+    """
+    Plot the lower dimension representation of the latent space using t-SNE algorithm.
 
+    Parameters:
+    z_run (array-like): Array of latent space features fed row-wise.
+    test_labels (array-like): Groundtruth variable.
+    graph_name (str): Name of the output graph file.
+    test_size (float): Proportion of the dataset to include in the test split.
+    ang (float): Azimuthal angle for the 3D plot.
+    perplexity (float): Perplexity parameter for the t-SNE algorithm.
+
+    Returns:
+    ax (matplotlib.axes.Axes): The 3D plot axes.
+    fig (matplotlib.figure.Figure): The figure object containing the plot.
+    """
     output = z_run
     # array of latent space, features fed rowise
 
@@ -176,31 +240,38 @@ def TSNEplot(z_run, test_labels, graph_name, test_size, ang, perplexity):
     plt.show()
     return ax, fig
 
-
+#%%
 def compute_embeddings(model, train_df, device, dataset, folder_created):
+    """
+    Compute embeddings for the given model and training data.
+
+    Args:
+        model (torch.nn.Module): The model used for computing embeddings.
+        train_df (torch.utils.data.Dataset): The training dataset.
+        device (torch.device): The device to run the computation on.
+        dataset (str): The name of the dataset.
+        folder_created (str): The folder path where the embeddings and labels will be saved.
+
+    Returns:
+        tuple: A tuple containing the computed embeddings and corresponding labels.
+    """
 
     train_results = []
     labels = []
 
     model.eval()
     with torch.no_grad():
-        # for img, label in tqdm(valset):
         for i, batch in enumerate(train_df, 0):
-
             data, output = batch
-            # print(data.shape)
-            # print(output.shape)
             img, label = data.to(device, dtype=torch.float), output.to(device, dtype=torch.long)
             label = label.squeeze()
 
-            # img=img.unsqueeze(1)
             img = model(img.to(device, dtype=torch.float)).cpu().numpy()
             train_results.append(img)
             labels.append(label.cpu().numpy())
 
     train_results = np.concatenate(train_results)
     train_labels = np.concatenate(labels)
-    train_results.shape
 
     train_embeddings = folder_created+'/'+str(dataset)+'_embeddings' + '.npy'
     train_labelsname = folder_created+'/'+str(dataset)+'_labels'+'.npy'

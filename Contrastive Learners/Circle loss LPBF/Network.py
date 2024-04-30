@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 29 01:19:48 2021
 
 @author: srpv
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
+
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
 """
+#libraries to import
 import matplotlib.pyplot as plt
 import numpy as np
 from prettytable import PrettyTable
@@ -22,6 +29,10 @@ class PrintLayer(torch.nn.Module):
 
 
 class Network(nn.Module):
+    """
+    This class represents a neural network model for multi-material composition monitoring using sensor fusion.
+    """
+
     def __init__(self, droupout, emb_dim):
         super(Network, self).__init__()
         #torch.Size([100, 1, 5000])
@@ -76,6 +87,15 @@ class Network(nn.Module):
         )
 
     def forward(self, x):
+        """
+        Forward pass of the network.
+
+        Args:
+            x (torch.Tensor): Input tensor.
+
+        Returns:
+            torch.Tensor: Output tensor after passing through the network.
+        """
         PrintLayer(),
         # x = x.permute(0, 2, 1)
         PrintLayer(),

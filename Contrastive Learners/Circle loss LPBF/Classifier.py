@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 29 01:27:06 2021
 
 @author: srpv
-"""
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
 
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
+"""
+#libraries to import
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -32,8 +38,24 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 import seaborn as sns
 
-
+# %%
 def LR(X_train, X_test, y_train, y_test, file, folder_created):
+    """
+    Trains a logistic regression classifier on the given training data and evaluates its performance on the test data.
+
+    Parameters:
+    - X_train (array-like): The training data features.
+    - X_test (array-like): The test data features.
+    - y_train (array-like): The training data labels.
+    - y_test (array-like): The test data labels.
+    - file (str): The name of the file.
+    - folder_created (str): The path of the folder where the output files will be saved.
+
+    Returns:
+    - y_pred_prob (array-like): The predicted probabilities for each class for the test data.
+    - pred_prob (array-like): The predicted probabilities for each class for the test data.
+    - model_classifier (LogisticRegression): The trained logistic regression classifier.
+    """
 
     model_classifier = LogisticRegression(max_iter=1000, random_state=123)
     model_classifier.fit(X_train, y_train)

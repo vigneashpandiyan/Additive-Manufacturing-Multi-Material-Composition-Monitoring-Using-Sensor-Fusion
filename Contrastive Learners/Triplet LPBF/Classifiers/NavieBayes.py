@@ -1,9 +1,15 @@
-# -*- coding: utf-8 -*-
 """
-Created on Thu Mar 31 12:04:37 2022
 
 @author: srpv
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
+
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
 """
+#%% Libraries required:
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import RepeatedStratifiedKFold
@@ -15,17 +21,28 @@ from sklearn import metrics
 import pandas as pd
 from sklearn.naive_bayes import GaussianNB
 import os
-
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.model_selection import cross_val_score
-
 from numpy import mean
 from numpy import std
 
 # %%
 
-
 def NB(X_train, X_test, y_train, y_test, classes, total_path):
+    """
+    Trains a Naive Bayes classifier on the given training data and evaluates its performance on the test data.
+
+    Args:
+        X_train (array-like): The training data features.
+        X_test (array-like): The test data features.
+        y_train (array-like): The training data labels.
+        y_test (array-like): The test data labels.
+        classes (array-like): The class labels.
+        total_path (str): The path to save the generated graphs and model.
+
+    Returns:
+        None
+    """
 
     print('Model to be trained is NB')
 

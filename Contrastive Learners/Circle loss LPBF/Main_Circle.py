@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 31 12:04:37 2022
 
 @author: srpv
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
+
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
 """
+#libraries to import
 
 import time
 import torch
@@ -25,8 +32,6 @@ from Network import *
 from Loss import *
 from Dataloader import *
 from Generalization import *
-
-
 from torch.optim.lr_scheduler import StepLR
 from sklearn.model_selection import train_test_split  # implementing train-test-split
 import os
@@ -41,14 +46,21 @@ from Classifiers.Logistic_regression import *
 from Classifiers.XGBoost import *
 from Visualization import *
 # %%
+
+# Clearing the cache
+torch.cuda.empty_cache()
 torch.manual_seed(2020)
 np.random.seed(2020)
 random.seed(2020)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+#%%
+# GPU Device configuration
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(device)
 if device.type == "cuda":
     torch.cuda.get_device_name()
-
+#%%
+# Hyperparameters for the model training
 embedding_dims = 16
 batch_size = 256
 epochs = 300
@@ -57,10 +69,8 @@ Material_1 = "D1"
 Material_2 = "D2"
 
 # %%
-
-# ---> Folder path
+# Defining the path for the data  ---> Folder path  
 total_path = r"C:\Users\srpv\Desktop\Git\Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion\Data"
-
 
 featurefile_1 = 'D1_rawspace_5000.npy'  # 'AE'+'_'+ 'PSD' +'.npy'
 featurefile_2 = 'D2_rawspace_5000.npy'  # 'AE'+'_'+ 'PSD' +'.npy'
@@ -70,21 +80,26 @@ featurefile_1 = (os.path.join(total_path, featurefile_1))
 featurefile_2 = (os.path.join(total_path, featurefile_2))
 classfile = (os.path.join(total_path, classfile))
 
-
 Featurespace_1 = np.load(featurefile_1).astype(np.float64)
 Featurespace_2 = np.load(featurefile_2).astype(np.float64)
 classspace = np.load(classfile).astype(np.float64)
 
+# Data_torch function helps to convert the data into torch dataset
 trainset, testset = Data_torch(classspace, Featurespace_1, Featurespace_2)
-
-
-print(device)
-
 
 # %%
 
-
 def get_lr(optimizer):
+
+    """
+    Returns the learning rate of the optimizer.
+
+    Parameters:
+    optimizer (torch.optim.Optimizer): The optimizer object.
+
+    Returns:
+    float: The learning rate of the optimizer.
+    """
     for param_group in optimizer.param_groups:
         # print('Learning rate =')
         # print(param_group['lr'])
@@ -92,28 +107,21 @@ def get_lr(optimizer):
 
 
 # %%
-
+# Model definition
 model = Network(droupout=0.05, emb_dim=embedding_dims)
 # model.apply(init_weights)
 # model = torch.jit.script(model).to(device)
-
 model = model.to(device)
-
 optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 scheduler = StepLR(optimizer, step_size=50, gamma=0.25)
-
-
 # criterion = torch.jit.script(TripletLoss())
 criterion = CircleLoss(m=0.25, gamma=25)
-
 model.train()
 
-
-# %%
-
+#%%
+# Training the model
 Loss_value = []
 Learning_rate = []
-
 Training_loss_mean = []
 Training_loss_std = []
 for epoch in range(epochs):
@@ -151,14 +159,14 @@ print('Finished Training')
 
 
 # %%
-
+# Saving the model
 torch.save({"model_state_dict": model.state_dict(),
             "optimzier_state_dict": optimizer.state_dict()
             }, "trained_model.pth")
 
 
 # %%
-
+# Saving the loss values
 Loss_value = np.asarray(Loss_value)
 Loss_embeddings = (str(Material_1)+str(Material_2))+'Loss_value'+'_Circle' + '.npy'
 np.save(Loss_embeddings, Loss_value, allow_pickle=True)
@@ -176,7 +184,7 @@ Learning_ratefile = (str(Material_1)+str(Material_2))+'Learning_rate'+'_Circle' 
 np.save(Learning_ratefile, Learning_rate, allow_pickle=True)
 
 # %%
-
+# Plotting the loss values
 plt.rcParams.update({'font.size': 15})
 plt.figure(figsize=(6, 3))
 plt.plot(Loss_value, 'b', linewidth=2.0)
@@ -188,6 +196,8 @@ plt.savefig((str(Material_1)+str(Material_2)) +
             'Training loss_Circle.png', dpi=600, bbox_inches='tight')
 plt.show()
 
+# %%
+# Plotting the loss values with mean and standard deviation
 plt.rcParams.update(plt.rcParamsDefault)
 plt.figure(figsize=(6, 3))
 Loss_value = pd.DataFrame(Loss_value)
@@ -215,7 +225,8 @@ plt.savefig(plot_1, dpi=600, bbox_inches='tight')
 plt.show()
 plt.clf()
 
-
+#%%
+# Plotting the learning rate
 plt.rcParams.update({'font.size': 10})
 plt.figure(figsize=(6, 3))
 plt.plot(Learning_rate, 'g', linewidth=2.0)
@@ -231,8 +242,10 @@ plt.savefig((str(Material_1)+str(Material_2)) +
 plt.show()
 
 # %%
+# Counting the number of parameters
 count_parameters(model)
 # %%
+# Generalization of the model
 X_train, X_test, y_train, y_test = generalization(
     Material_1, Material_2, trainset, testset, total_path, model, device)
 
@@ -261,7 +274,8 @@ classspace = data.iloc[:, -1].to_numpy()
 
 X_train, X_test, y_train, y_test, = train_test_split(rawspace, classspace, test_size=0.3)
 
-
+# %%
+# Visualization of the data
 folder_created = os.path.join('Figures/', (str(Material_1)+str(Material_2)))
 print(folder_created)
 try:
@@ -294,7 +308,7 @@ fig.show()
 
 
 # %%
-
+# Classifiers
 RF(X_train, X_test, y_train, y_test, 100, classes, folder_created)
 SVM(X_train, X_test, y_train, y_test, classes, folder_created)
 NN(X_train, X_test, y_train, y_test, classes, folder_created)

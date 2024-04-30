@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jan 28 15:48:52 2023
 
 @author: srpv
-"""
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
 
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
+"""
+#libraries to import
 from Utils import *
 from Network import *
 from Dataloader import *
@@ -16,14 +22,7 @@ from matplotlib import animation
 
 def generalization(Material_1, Material_2, trainset, testset, total_path, model, device):
 
-    folder_created = os.path.join('Figures/', (str(Material_1)+str(Material_2)))
-    print(folder_created)
-    try:
-        os.makedirs(folder_created, exist_ok=True)
-        print("Directory created....")
-    except OSError as error:
-        print("Directory already exists....")
-
+    # Compute embeddings for the trainset and testset
     train_results, train_labels = compute_embeddings(
         model, trainset, device, (str(Material_1)+str(Material_2))+'_train', folder_created)
     test_results, test_labels = compute_embeddings(
@@ -65,4 +64,4 @@ def generalization(Material_1, Material_2, trainset, testset, total_path, model,
 
     return train_results, test_results, train_labels, test_labels
 
-    # return bayes_embeddings,bayes_labels,model_classifier
+
