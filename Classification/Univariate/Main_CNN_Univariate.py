@@ -37,10 +37,10 @@ torch.cuda.empty_cache()
 batch_size = 256
 epoch = 300
 windowsize = 5000
-Materials = ["D1", "D2"]
+Sensor_stream = ["D1", "D2"]
 embedding_dims = 32
 
-for Material in Materials:
+for Material in Sensor_stream:
 
     # %%
     # Checking the availability of the GPU device
