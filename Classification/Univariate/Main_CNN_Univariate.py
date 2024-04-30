@@ -50,6 +50,7 @@ for Material in Sensor_stream:
 
     # %%
     # Defining the path for the data  ---> Folder path
+    #http://dx.doi.org/10.5281/zenodo.11094814
     total_path = r"C:\Users\srpv\Desktop\Git\Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion\Data"
 
     rawspace, classspace = data_pipeline(Material, total_path, windowsize)

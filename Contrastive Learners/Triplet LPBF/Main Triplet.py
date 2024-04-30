@@ -64,6 +64,7 @@ if device.type == "cuda":
 
 # %%
 # Defining the path for the data  ---> Folder path
+#http://dx.doi.org/10.5281/zenodo.11094814
 total_path = r"C:\Users\srpv\Desktop\Git\Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion\Data"
 
 rawspace_1, classspace = data_pipeline(Material_1, total_path, windowsize)
