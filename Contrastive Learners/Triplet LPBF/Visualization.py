@@ -1,33 +1,32 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun  9 13:37:13 2022
 
 @author: srpv
-"""
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
 
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
+"""
+#libraries to import
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import itertools
 import os
 from sklearn import metrics
-
 import collections
-
-
-
 import joblib
 from sklearn.model_selection import cross_val_score
 from IPython.display import Image
-
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
 from matplotlib.pyplot import specgram
 import seaborn as sns
 from scipy.stats import norm
 # import joypy as jp
-
-
 from matplotlib import cm
 from scipy import signal
 import pywt
@@ -36,25 +35,37 @@ from matplotlib import colors
 from sklearn.preprocessing import StandardScaler
 import os
 
-
+#%%
 
 def Cummulative_plots(Featurespace,classspace,i,ax):
+        
+    """
+    Plot cumulative distribution of features based on categorical labels.
+
+    Args:
+        Featurespace (numpy.ndarray): Array of features.
+        classspace (numpy.ndarray): Array of categorical labels.
+        i (int): Index of the feature to plot.
+        ax (matplotlib.axes.Axes): Axes object to plot the cumulative distribution.
+
+    Returns:
+        None
+    """
     
     columns = np.atleast_2d(Featurespace).shape[1]
     df2 = pd.DataFrame(classspace)
     df2.columns = ['Categorical']
-    df2=df2['Categorical'].replace(1,'20%-Cu')
+    df2=df2['Categorical'].replace(0,'20%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(2,'40%-Cu')
+    df2=df2['Categorical'].replace(1,'40%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(3,'60%-Cu')
+    df2=df2['Categorical'].replace(2,'60%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(4,'80%-Cu')
+    df2=df2['Categorical'].replace(3,'80%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(5,'100%-Cu')
+    df2=df2['Categorical'].replace(4,'100%-Cu')
     df2 = pd.DataFrame(df2)
     print(columns) 
-    
     
     print(i)
     
@@ -70,8 +81,22 @@ def Cummulative_plots(Featurespace,classspace,i,ax):
     data = pd.concat([data[data.categorical == cat].head(minval) for cat in data.categorical.unique() ])
     
     Cummulative_dist_plot(data,i,ax)
+
+#%%
     
-def Cummulative_dist_plot(data,i,ax):
+def Cummulative_dist_plot(data, i, ax):
+    """
+    Plot the cumulative distribution of different target values.
+
+    Args:
+        data (pandas.DataFrame): The input data containing the target values and feature column.
+        i (int): The weight index.
+        ax (matplotlib.axes.Axes): The axes object to plot the cumulative distribution.
+
+    Returns:
+        None
+    """
+
     new_columns = list(data.columns)
     new_columns[-1] = 'target'
     data.columns = new_columns
@@ -110,8 +135,22 @@ def Cummulative_dist_plot(data,i,ax):
     ax.spines['left'].set_visible(False)
     
 
+#%%
 
-def distribution_plot(data,i,Material,folder_created):
+def distribution_plot(data, i, Material, folder_created):
+    """
+    Plots the distribution of feature values for different target classes.
+
+    Args:
+        data (DataFrame): The input data containing feature values and target classes.
+        i (int): The weight index.
+        Material (str): The material name.
+        folder_created (str): The name of the folder where the plot will be saved.
+
+    Returns:
+        None
+    """
+
     new_columns = list(data.columns)
     new_columns[-1] = 'target'
     data.columns = new_columns
@@ -154,57 +193,77 @@ def distribution_plot(data,i,Material,folder_created):
     
 #%%
 
-def plots(Featurespace,classspace,Material,folder_created):
-    
+def plots(Featurespace, classspace, Material, folder_created):
+    """
+    Plot the Featurespace and classspace data.
+
+    Args:
+        Featurespace (numpy.ndarray): The Featurespace data.
+        classspace (numpy.ndarray): The classspace data.
+        Material (str): The material name.
+        folder_created (str): The folder path where the plots will be saved.
+    """
+
     columns = np.atleast_2d(Featurespace).shape[1]
     df2 = pd.DataFrame(classspace)
     
     df2.columns = ['Categorical']
-    df2=df2['Categorical'].replace(1,'20%-Cu')
+    df2 = df2['Categorical'].replace(0, '20%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(2,'40%-Cu')
+    df2 = df2['Categorical'].replace(1, '40%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(3,'60%-Cu')
+    df2 = df2['Categorical'].replace(2, '60%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(4,'80%-Cu')
+    df2 = df2['Categorical'].replace(3, '80%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(5,'100%-Cu')
+    df2 = df2['Categorical'].replace(4, '100%-Cu')
     df2 = pd.DataFrame(df2)
     print(columns)
     
     for i in range(columns):
         print(i)
         Featurespace_1 = Featurespace.transpose()
-        data=(Featurespace_1[i])
-        data=data.astype(np.float64)
-        #data= abs(data)
+        data = (Featurespace_1[i])
+        data = data.astype(np.float64)
+        # data = abs(data)
         df1 = pd.DataFrame(data)
-        df1.rename(columns={df1.columns[0]: "Feature" }, inplace = True)
-        df2.rename(columns={df2.columns[0]: "categorical" }, inplace = True)
+        df1.rename(columns={df1.columns[0]: "Feature" }, inplace=True)
+        df2.rename(columns={df2.columns[0]: "categorical" }, inplace=True)
         data = pd.concat([df1, df2], axis=1)
         
         minval = min(data.categorical.value_counts())
-        data = pd.concat([data[data.categorical == cat].head(minval) for cat in data.categorical.unique() ])
+        data = pd.concat([data[data.categorical == cat].head(minval) for cat in data.categorical.unique()])
         
-        distribution_plot(data,i,Material,folder_created)
+        distribution_plot(data, i, Material, folder_created)
        
-     
+ #%%    
 
-def plots_choice(i,Featurespace,classspace):
-    
+def plots_choice(i, Featurespace, classspace):
+    """
+    Plot the choice of features and class space.
+
+    Args:
+        i (int): The index of the feature space to plot.
+        Featurespace (numpy.ndarray): The feature space.
+        classspace (numpy.ndarray): The class space.
+
+    Returns:
+        None
+    """
+
     columns = np.atleast_2d(Featurespace).shape[1]
     df2 = pd.DataFrame(classspace)
     
     df2.columns = ['Categorical']
-    df2=df2['Categorical'].replace(1,'20%-Cu')
+    df2=df2['Categorical'].replace(0,'20%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(2,'40%-Cu')
+    df2=df2['Categorical'].replace(1,'40%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(3,'60%-Cu')
+    df2=df2['Categorical'].replace(2,'60%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(4,'80%-Cu')
+    df2=df2['Categorical'].replace(3,'80%-Cu')
     df2 = pd.DataFrame(df2)
-    df2=df2['Categorical'].replace(5,'100%-Cu')
+    df2=df2['Categorical'].replace(4,'100%-Cu')
     df2 = pd.DataFrame(df2)
     print(columns)
     

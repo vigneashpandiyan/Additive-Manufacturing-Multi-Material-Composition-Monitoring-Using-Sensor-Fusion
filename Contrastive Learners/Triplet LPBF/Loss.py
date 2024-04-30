@@ -1,15 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 29 01:29:30 2021
 
 @author: srpv
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
+
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
 """
+#libraries to import
 import torch.nn as nn
 import torch
 from torch.nn import functional as F
 
 
 class TripletLoss(nn.Module):
+    """
+    TripletLoss is a custom loss function used for training triplet networks.
+    
+    Args:
+        margin (float): The margin value for the triplet loss. Default is 1.0.
+    
+    Inputs:
+        anchor (torch.Tensor): The anchor samples.
+        positive (torch.Tensor): The positive samples.
+        negative (torch.Tensor): The negative samples.
+    
+    Returns:
+        torch.Tensor: The computed triplet loss value.
+    """
+    
     def __init__(self, margin=1.0):
         super(TripletLoss, self).__init__()
         self.margin = margin

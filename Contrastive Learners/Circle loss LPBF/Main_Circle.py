@@ -21,7 +21,6 @@ import torch.nn as nn
 import torch.optim as optim
 from tqdm.notebook import tqdm
 import matplotlib.pyplot as plt
-
 from torchvision import transforms
 from torch.utils.data import DataLoader, Dataset
 from torch.nn import functional as F
@@ -46,7 +45,7 @@ from Classifiers.Logistic_regression import *
 from Classifiers.XGBoost import *
 from Visualization import *
 # %%
-
+# %%
 # Clearing the cache
 torch.cuda.empty_cache()
 torch.manual_seed(2020)
@@ -69,12 +68,13 @@ Material_1 = "D1"
 Material_2 = "D2"
 
 # %%
+
+# %%
 # Defining the path for the data  ---> Folder path  
 total_path = r"C:\Users\srpv\Desktop\Git\Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion\Data"
-
-featurefile_1 = 'D1_rawspace_5000.npy'  # 'AE'+'_'+ 'PSD' +'.npy'
-featurefile_2 = 'D2_rawspace_5000.npy'  # 'AE'+'_'+ 'PSD' +'.npy'
-classfile = 'D1_classspace_5000.npy'  # 'Classlabel'+'_'+ 'PSD' +'.npy'
+featurefile_1 = 'D1_rawspace_5000.npy'  
+featurefile_2 = 'D2_rawspace_5000.npy'  
+classfile = 'D1_classspace_5000.npy'  
 
 featurefile_1 = (os.path.join(total_path, featurefile_1))
 featurefile_2 = (os.path.join(total_path, featurefile_2))

@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 29 01:19:48 2021
 
 @author: srpv
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
+
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
 """
+#libraries to import
 import matplotlib.pyplot as plt
 import numpy as np
 from prettytable import PrettyTable
@@ -17,25 +24,6 @@ from tqdm.notebook import tqdm
 from Dataloader import *
 from torchvision import transforms
 
-def init_weights(m):
-    if isinstance(m, nn.Conv1d):
-        torch.nn.init.kaiming_normal_(m.weight)
-        
-        
-def count_parameters(model):
-    table = PrettyTable(["Modules", "Parameters"])
-    total_params = 0
-    for name, parameter in model.named_parameters():
-        if not parameter.requires_grad: continue
-        param = parameter.numel()
-        table.add_row([name, param])
-        total_params+=param
-    print(table)
-    print(f"Total Trainable Params: {total_params}")
-    return total_params
-
-
-
 colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
               '#9467bd', '#8c564b', '#e377c2', '#7f7f7f',
               '#bcbd22', '#17becf']
@@ -45,7 +33,57 @@ mnist_classes = ['20%-Cu', '40%-Cu', '60%-Cu', '80%-Cu', '100%-Cu']
 
 graph_title = "Feature space distribution"
 
-def plot_embeddings(embeddings, targets,graph_name_2D, xlim=None, ylim=None):
+
+def init_weights(m):
+    """
+    Initializes the weights of a convolutional layer using the Kaiming normal initialization.
+
+    Args:
+        m (nn.Conv1d): The convolutional layer to initialize.
+
+    Returns:
+        None
+    """
+    if isinstance(m, nn.Conv1d):
+        torch.nn.init.kaiming_normal_(m.weight)
+        
+        
+def count_parameters(model):
+    """
+    Counts the total number of trainable parameters in a given model.
+
+    Args:
+        model (torch.nn.Module): The model for which to count the parameters.
+
+    Returns:
+        int: The total number of trainable parameters in the model.
+    """
+    table = PrettyTable(["Modules", "Parameters"])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad: continue
+        param = parameter.numel()
+        table.add_row([name, param])
+        total_params += param
+    print(table)
+    print(f"Total Trainable Params: {total_params}")
+    return total_params
+
+def plot_embeddings(embeddings, targets, graph_name_2D, xlim=None, ylim=None):
+    """
+    Plots the embeddings in a 2D scatter plot.
+
+    Args:
+        embeddings (numpy.ndarray): The embeddings to be plotted.
+        targets (numpy.ndarray): The target labels for each embedding.
+        graph_name_2D (str): The name of the output graph file.
+        xlim (tuple, optional): The x-axis limits of the plot. Defaults to None.
+        ylim (tuple, optional): The y-axis limits of the plot. Defaults to None.
+
+    Returns:
+        None
+    """
+
     plt.rcParams.update(plt.rcParamsDefault)
     plt.figure(figsize=(7,5))
     count=0
@@ -65,7 +103,22 @@ def plot_embeddings(embeddings, targets,graph_name_2D, xlim=None, ylim=None):
     plt.show()
     
 def plot_embeddings_reduced(embeddings, targets,graph_name_2D,test_size, xlim=None, ylim=None):
-    
+
+    """
+        Plots the reduced embeddings in a 2D scatter plot.
+
+        Args:
+            embeddings (numpy.ndarray): The embeddings to be plotted.
+            targets (numpy.ndarray): The target labels for each embedding.
+            graph_name_2D (str): The name of the output graph file.
+            test_size (float): The proportion of the data to include in the test split.
+            xlim (tuple, optional): The x-axis limits of the plot. Defaults to None.
+            ylim (tuple, optional): The y-axis limits of the plot. Defaults to None.
+
+        Returns:
+            None
+    """
+        
     embeddings, _, targets, _ = train_test_split(embeddings, targets, test_size=test_size, random_state=66)
     plt.rcParams.update(plt.rcParamsDefault)
     plt.figure(figsize=(7,5))
@@ -86,11 +139,22 @@ def plot_embeddings_reduced(embeddings, targets,graph_name_2D,test_size, xlim=No
     plt.show()
     
     
+def TSNEplot(z_run, test_labels, graph_name, test_size, ang, perplexity):
+    """
+    Plot the lower dimension representation of the latent space using t-SNE algorithm.
 
+    Parameters:
+    z_run (numpy.ndarray): Array of latent space features fed row-wise.
+    test_labels (numpy.ndarray): Groundtruth variable.
+    graph_name (str): Name of the output graph file.
+    test_size (float): Proportion of the dataset to include in the test split.
+    ang (int): Azimuthal angle for the 3D plot.
+    perplexity (float): Perplexity parameter for the t-SNE algorithm.
 
-
-def TSNEplot(z_run,test_labels,graph_name,test_size,ang,perplexity):
-    
+    Returns:
+    ax (matplotlib.axes.Axes): The 3D plot axes.
+    fig (matplotlib.figure.Figure): The figure object containing the plot.
+    """
     output = z_run
     #array of latent space, features fed rowise
     
@@ -109,9 +173,6 @@ def TSNEplot(z_run,test_labels,graph_name,test_size,ang,perplexity):
     tsne = TSNE(n_components=3, random_state=RS, perplexity=perplexity)
     tsne_fit = tsne.fit_transform(output)
         
-
-    
-    
     x1=tsne_fit[:, 0]
     x2=tsne_fit[:, 1]
     x3=tsne_fit[:, 2]
@@ -178,27 +239,26 @@ def TSNEplot(z_run,test_labels,graph_name,test_size,ang,perplexity):
     plt.show()
     return ax,fig
 
-class Mechanism(Dataset):
-    
-    def __init__(self,sequences):
-        self.sequences = sequences
-    
-    def __len__(self):
-        
-        return len(self.sequences)
-    
-    def __getitem__(self,idx):
-        sequence,label =  self.sequences [idx]
-        sequence=torch.Tensor(sequence)
-        sequence = sequence.view(1, -1)
-        label=torch.tensor(label).long()
-        sequence,label
-        return sequence,label
-    
+def compute_embeddings(model, X_train, y_train, index_train, device, dataset, folder_created):
+    """
+    Computes embeddings for the given dataset using the provided model.
 
-def compute_embeddings(model,X_train, y_train,index_train,device,dataset,folder_created):
-    
-    val_ds = MNIST(X_train, y_train,index_train,
+    Args:
+        model (torch.nn.Module): The model used for computing embeddings.
+        X_train (numpy.ndarray): The input data for training.
+        y_train (numpy.ndarray): The target labels for training.
+        index_train (numpy.ndarray): The indices of the training data.
+        device (torch.device): The device to run the computation on.
+        dataset (str): The name of the dataset.
+        folder_created (str): The folder path where the embeddings and labels will be saved.
+
+    Returns:
+        tuple: A tuple containing the computed embeddings and corresponding labels.
+            - train_results (numpy.ndarray): The computed embeddings.
+            - train_labels (numpy.ndarray): The corresponding labels.
+    """
+
+    val_ds = Triplet_dataloader(X_train, y_train,index_train,
                     train=False,
                     transform=transforms.Compose([
                         transforms.ToTensor()

@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 29 01:19:48 2021
 
 @author: srpv
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
+
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
 """
+#libraries to import
 import matplotlib.pyplot as plt
 import numpy as np
 from prettytable import PrettyTable
@@ -22,6 +29,20 @@ class PrintLayer(torch.nn.Module):
 
 
 class Network(nn.Module):
+    """
+    This class represents a network model for multi-material composition monitoring using sensor fusion.
+    
+    Args:
+        droupout (float): The dropout rate for the network.
+        emb_dim (int): The dimension of the output embedding.
+    
+    Inputs:
+        x (torch.Tensor): The input tensor of shape (batch_size, 1, 5000).
+    
+    Returns:
+        torch.Tensor: The normalized output tensor of shape (batch_size, emb_dim).
+    """
+
     def __init__(self, droupout, emb_dim):
         super(Network, self).__init__()
         #torch.Size([100, 1, 5000])
@@ -76,6 +97,15 @@ class Network(nn.Module):
         )
 
     def forward(self, x):
+        """
+        Applies forward pass on the input tensor.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, channels, sequence_length).
+
+        Returns:
+            torch.Tensor: Normalized output tensor of shape (batch_size, embedding_size).
+        """
         PrintLayer(),
         x = x.permute(0, 2, 1)
         PrintLayer(),
