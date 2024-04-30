@@ -18,6 +18,15 @@ import numpy as np
 
 
 def get_lr(optimizer):
+    """
+    Get the learning rate from the optimizer.
+
+    Parameters:
+    optimizer (torch.optim.Optimizer): The optimizer object.
+
+    Returns:
+    float: The learning rate value.
+    """
     for param_group in optimizer.param_groups:
         print('Learning rate =')
         print(param_group['lr'])
@@ -25,6 +34,20 @@ def get_lr(optimizer):
 
 
 def Network_trainer(net, trainset, testset, device, epoch):
+    """
+    Trains a neural network model using the provided training set and evaluates its performance on the test set.
+
+    Args:
+        net (torch.nn.Module): The neural network model to be trained.
+        trainset (torch.utils.data.Dataset): The training dataset.
+        testset (torch.utils.data.Dataset): The test dataset.
+        device (torch.device): The device (CPU or GPU) to be used for training and evaluation.
+        epoch (int): The number of epochs to train the model.
+
+    Returns:
+        tuple: A tuple containing the trained model and various training statistics.
+
+    """
 
     costFunc = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)

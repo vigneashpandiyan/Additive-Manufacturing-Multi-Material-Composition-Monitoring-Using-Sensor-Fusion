@@ -1,9 +1,15 @@
-# -*- coding: utf-8 -*-
 """
-Created on Thu Aug 10 21:14:18 2023
 
 @author: srpv
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
+
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
 """
+#%% Libraries required:
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -14,9 +20,20 @@ import seaborn as sns
 import pandas as pd
 
 # %%
-
-
 def plot_confusion_matrix(model, testset, classes, device, plotname):
+    """
+    Plots the confusion matrix for a given model's predictions on a test set.
+
+    Args:
+        model (torch.nn.Module): The trained model.
+        testset (torch.utils.data.Dataset): The test set.
+        classes (list): The list of class labels.
+        device (torch.device): The device to run the model on.
+        plotname (str): The name of the plot file to save.
+
+    Returns:
+        None
+    """
 
     y_pred = []
     y_true = []
@@ -50,25 +67,38 @@ def plot_confusion_matrix(model, testset, classes, device, plotname):
     plt.margins(0.2)
     ax.set_yticklabels(ax.get_yticklabels(), rotation=90, va="center", fontsize=20)
     ax.set_xticklabels(ax.get_xticklabels(), va="center", fontsize=20)
-    # plt.setp(ax.get_yticklabels(), rotation='vertical')
     plotname = str(plotname)
     plt.savefig(plotname, bbox_inches='tight')
     plt.show()
     plt.clf()
 
 # %%
-
-
 def plots(iteration, Loss_value, Total_Epoch, Accuracy, Learning_rate, Training_loss_mean, Training_loss_std, Material):
+    """
+    Plots the training loss, training accuracy, and learning rate over epochs.
+
+    Args:
+        iteration (int): The current iteration.
+        Loss_value (numpy.ndarray): The loss values for each epoch.
+        Total_Epoch (numpy.ndarray): The total number of epochs.
+        Accuracy (numpy.ndarray): The training accuracy for each epoch.
+        Learning_rate (numpy.ndarray): The learning rate for each epoch.
+        Training_loss_mean (numpy.ndarray): The mean training loss for each epoch.
+        Training_loss_std (numpy.ndarray): The standard deviation of training loss for each epoch.
+        Material (str): The material name.
+
+    Returns:
+        None
+    """
 
     Accuracyfile = str(Material)+'Accuracy'+'.npy'
-    Lossfile = str(Material)+'Loss_value'+'.npy'
     np.save(Accuracyfile, Accuracy, allow_pickle=True)
+    Lossfile = str(Material)+'Loss_value'+'.npy'
     np.save(Lossfile, Loss_value, allow_pickle=True)
 
     Training_loss_mean_file = str(Material)+'Training_loss_mean'+'.npy'
-    Training_loss_std_file = str(Material)+'Training_loss_std'+'.npy'
     np.save(Training_loss_mean_file, Training_loss_mean, allow_pickle=True)
+    Training_loss_std_file = str(Material)+'Training_loss_std'+'.npy'
     np.save(Training_loss_std_file, Training_loss_std, allow_pickle=True)
 
     plt.rcParams.update(plt.rcParamsDefault)
@@ -129,6 +159,16 @@ def plots(iteration, Loss_value, Total_Epoch, Accuracy, Learning_rate, Training_
 
 
 def count_parameters(model):
+    """
+    Counts the total number of trainable parameters in a PyTorch model.
+
+    Args:
+        model (torch.nn.Module): The PyTorch model.
+
+    Returns:
+        int: The total number of trainable parameters.
+
+    """
     table = PrettyTable(["Modules", "Parameters"])
     total_params = 0
     for name, parameter in model.named_parameters():
