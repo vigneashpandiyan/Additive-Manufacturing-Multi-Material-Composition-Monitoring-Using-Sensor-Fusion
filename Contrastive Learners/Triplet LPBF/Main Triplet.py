@@ -10,7 +10,7 @@ The codes in this following script will be used for the publication of the follo
 @any reuse of this code should be authorized by the first owner, code author
 
 """
-#libraries to import
+# libraries to import
 
 from sklearn.model_selection import train_test_split  # implementing train-test-split
 import time
@@ -47,7 +47,7 @@ torch.cuda.empty_cache()
 torch.manual_seed(2020)
 np.random.seed(2020)
 random.seed(2020)
-#%%
+# %%
 # Hyperparameters for the model training
 embedding_dims = 16
 batch_size = 256
@@ -63,11 +63,11 @@ if device.type == "cuda":
     torch.cuda.get_device_name()
 
 # %%
-# Defining the path for the data  ---> Folder path  
+# Defining the path for the data  ---> Folder path
 total_path = r"C:\Users\srpv\Desktop\Git\Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion\Data"
 
-rawspace_1, classspace = data_pipeline(Material_1, total_path,windowsize)
-rawspace_2, classspace = data_pipeline(Material_2, total_path,windowsize)
+rawspace_1, classspace = data_pipeline(Material_1, total_path, windowsize)
+rawspace_2, classspace = data_pipeline(Material_2, total_path, windowsize)
 rawspace = np.stack((rawspace_1, rawspace_2), axis=2)
 # %%
 
@@ -79,24 +79,24 @@ index_test = pd.DataFrame(y_test)
 # %%
 
 train_ds = Triplet_dataloader(X_train, y_train, index_train,
-                 train=True,
-                 transform=transforms.Compose([
-                     transforms.ToTensor()
-                 ]))
+                              train=True,
+                              transform=transforms.Compose([
+                                  transforms.ToTensor()
+                              ]))
 train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=0)
 test_ds = Triplet_dataloader(X_test, y_test, index_test,
-                train=False,
-                transform=transforms.Compose([
-                    transforms.ToTensor()
-                ]))
+                             train=False,
+                             transform=transforms.Compose([
+                                 transforms.ToTensor()
+                             ]))
 
 #MNIST(test_df, train=False, transform=transforms.ToTensor())
 test_loader = DataLoader(test_ds, batch_size=batch_size, shuffle=False, num_workers=0)
 
 # %%
 
-def get_lr(optimizer):
 
+def get_lr(optimizer):
     """
     Returns the learning rate of the optimizer.
 
@@ -112,6 +112,7 @@ def get_lr(optimizer):
         print(param_group['lr'])
         return param_group['lr']
 
+
 # %%
 # Model definition
 model = Network(droupout=0.05, emb_dim=embedding_dims)
@@ -122,7 +123,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 scheduler = StepLR(optimizer, step_size=50, gamma=0.5)
 criterion = torch.jit.script(TripletLoss())
 
-#%%
+# %%
 # Training the model
 model.train()
 Loss_value = []
@@ -179,6 +180,14 @@ torch.save({"model_state_dict": model.state_dict(),
             "optimzier_state_dict": optimizer.state_dict()
             }, "trained_model.pth")
 
+
+folder_created = os.path.join('Figures/', (str(Material_1)+str(Material_2)))
+print(folder_created)
+try:
+    os.makedirs(folder_created, exist_ok=True)
+    print("Directory created....")
+except OSError as error:
+    print("Directory already exists....")
 # %%
 # Saving the loss values
 Loss_value = np.asarray(Loss_value)
@@ -237,7 +246,7 @@ plt.savefig(plot_1, dpi=600, bbox_inches='tight')
 plt.show()
 plt.clf()
 
-#%%
+# %%
 # Plotting the learning rate
 plt.rcParams.update({'font.size': 15})
 plt.figure(figsize=(6, 3))
@@ -253,7 +262,8 @@ plt.show()
 count_parameters(model)
 # %%
 # Generalization of the model
-X_train, X_test, y_train, y_test = generalization(Material_1, Material_2, total_path, model, device)
+X_train, X_test, y_train, y_test = generalization(
+    Material_1, Material_2, windowsize, total_path, model, device)
 X_train = pd.DataFrame(X_train)
 X_test = pd.DataFrame(X_test)
 y_train = pd.DataFrame(y_train)
@@ -272,14 +282,6 @@ print("The dataset is well balanced: ", data.Categorical.value_counts())
 rawspace = data.iloc[:, :-1].to_numpy()
 classspace = data.iloc[:, -1].to_numpy()
 X_train, X_test, y_train, y_test, = train_test_split(rawspace, classspace, test_size=0.3)
-
-folder_created = os.path.join('Figures/', (str(Material_1)+str(Material_2)))
-print(folder_created)
-try:
-    os.makedirs(folder_created, exist_ok=True)
-    print("Directory created....")
-except OSError as error:
-    print("Directory already exists....")
 
 
 plots(X_train, y_train, (str(Material_1)+str(Material_2)), folder_created)
@@ -302,7 +304,6 @@ for i in range(columns):
 fig.tight_layout()
 fig.savefig(graph_name_32D)
 fig.show()
-# %%
 # %%
 # Classifiers
 RF(X_train, X_test, y_train, y_test, 100, classes, folder_created)
