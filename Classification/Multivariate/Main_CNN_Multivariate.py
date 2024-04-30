@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Aug 10 21:14:18 2023
 
 @author: srpv
-"""
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
 
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
+"""
+#libraries to import
 from Trainer.Trainer import *
 from Dataloader.Dataloader import *
 from Network.Network import *
@@ -19,40 +25,49 @@ import pandas as pd
 import time
 import matplotlib.pyplot as plt
 import seaborn as sns
-torch.cuda.empty_cache()
+
 # %%
+# Clearing the cache
+torch.cuda.empty_cache()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 
+# %%
+# Defining the Hyperparameters for training the network
 batch_size = 256
 epoch = 300
 windowsize = 5000
 Material_1 = "D1"
 Material_2 = "D2"
 embedding_dims = 32
-# %%
 
+# %%
+# Checking the availability of the GPU device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 if device.type == "cuda":
     torch.cuda.get_device_name()
 
-# ---> Folder path
+# %%
+# Defining the path for the data  ---> Folder path  
 total_path = r"C:\Users\srpv\Desktop\Git\Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion\Data"
 
 
-Featurespace_1, classspace = data_pipeline(Material_1, total_path)
-Featurespace_2, classspace = data_pipeline(Material_2, total_path)
+# Data_torch function helps to convert the data into torch dataset
+Featurespace_1, classspace = data_pipeline(Material_1, total_path,windowsize)
+Featurespace_2, classspace = data_pipeline(Material_2, total_path,windowsize)
 trainset, testset = Data_torch(classspace, Featurespace_1, Featurespace_2)
 
-
 # %%
+# Defining the network and if the GPU device is avaialble then the network will be loaded and trained on the GPU 
 if torch.cuda.device_count() > 0:
     print("Let's use", torch.cuda.device_count(), "GPUs!")
-    # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
     net = CNN(len(np.unique(classspace)), embedding_dims, dropout_rate=0.1)
     # net = nn.DataParallel(net)
 net.to(device)
 summary(net, (2, 5000))
+
+#%%
+# Training the network
 
 model, iteration, Loss_value, Total_Epoch, Accuracy, Learning_rate, Training_loss_mean, Training_loss_std = Network_trainer(
     net, trainset, testset, device, epoch=epoch)
