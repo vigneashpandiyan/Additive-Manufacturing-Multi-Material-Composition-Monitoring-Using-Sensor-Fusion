@@ -1,9 +1,15 @@
-# -*- coding: utf-8 -*-
 """
-Created on Thu Aug 10 21:14:18 2023
 
 @author: srpv
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
+
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
 """
+#%% Libraries required:
 
 import numpy as np
 import matplotlib

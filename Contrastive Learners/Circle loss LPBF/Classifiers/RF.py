@@ -1,10 +1,15 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Mar 29 01:27:06 2021
 
 @author: srpv
-"""
+contact: vigneashwara.solairajapandiyan@empa.ch, vigneashpandiyan@gmail.com
 
+The codes in this following script will be used for the publication of the following work
+
+"Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in Laser Powder Bed Fusion Process"
+@any reuse of this code should be authorized by the first owner, code author
+
+"""
+#%% Libraries required:
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
@@ -18,8 +23,24 @@ import pandas as pd
 import os
 import numpy
 
+#%%
 
 def RF(X_train, X_test, y_train, y_test, n_estimators, classes, total_path):
+    """
+    Trains a Random Forest classifier on the given training data and evaluates its performance on the test data.
+
+    Parameters:
+        X_train (array-like): The training data features.
+        X_test (array-like): The test data features.
+        y_train (array-like): The training data labels.
+        y_test (array-like): The test data labels.
+        n_estimators (int): The number of trees in the random forest.
+        classes (array-like): The class labels.
+        total_path (str): The path to save the generated graphs and model.
+
+    Returns:
+        None
+    """
 
     print('Model to be trained is RF')
 
