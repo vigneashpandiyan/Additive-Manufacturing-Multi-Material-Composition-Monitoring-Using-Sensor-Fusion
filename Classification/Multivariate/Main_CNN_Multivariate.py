@@ -10,7 +10,7 @@ The codes in this following script will be used for the publication of the follo
 @any reuse of this code should be authorized by the first owner, code author
 
 """
-#libraries to import
+# libraries to import
 from Trainer.Trainer import *
 from Dataloader.Dataloader import *
 from Network.Network import *
@@ -48,17 +48,16 @@ if device.type == "cuda":
     torch.cuda.get_device_name()
 
 # %%
-# Defining the path for the data  ---> Folder path  
+# Defining the path for the data  ---> Folder path
 total_path = r"C:\Users\srpv\Desktop\Git\Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion\Data"
 
-
 # Data_torch function helps to convert the data into torch dataset
-Featurespace_1, classspace = data_pipeline(Material_1, total_path,windowsize)
-Featurespace_2, classspace = data_pipeline(Material_2, total_path,windowsize)
+Featurespace_1, classspace = data_pipeline(Material_1, total_path, windowsize)
+Featurespace_2, classspace = data_pipeline(Material_2, total_path, windowsize)
 trainset, testset = Data_torch(classspace, Featurespace_1, Featurespace_2)
 
 # %%
-# Defining the network and if the GPU device is avaialble then the network will be loaded and trained on the GPU 
+# Defining the network and if the GPU device is avaialble then the network will be loaded and trained on the GPU
 if torch.cuda.device_count() > 0:
     print("Let's use", torch.cuda.device_count(), "GPUs!")
     net = CNN(len(np.unique(classspace)), embedding_dims, dropout_rate=0.1)
@@ -66,7 +65,7 @@ if torch.cuda.device_count() > 0:
 net.to(device)
 summary(net, (2, 5000))
 
-#%%
+# %%
 # Training the network
 
 model, iteration, Loss_value, Total_Epoch, Accuracy, Learning_rate, Training_loss_mean, Training_loss_std = Network_trainer(
@@ -91,7 +90,7 @@ for batches in testset:
 print('Accuracy = '+str((correctHits/total)*100))
 print('Finished Training')
 
-#%%
+# %%
 # Plotting the confusion matrix and the training loss, learning rate and accuracy
 folder_created = os.path.join('Figures/', str(Material_1)+str(Material_2))
 print(folder_created)
@@ -104,6 +103,6 @@ plt.rcParams.update(plt.rcParamsDefault)
 plots(iteration, Loss_value, Total_Epoch, Accuracy, Learning_rate,
       Training_loss_mean, Training_loss_std, folder_created)
 count_parameters(net)
-classes = ('1', '2', '3', '4', '5') # Change the classes based on the dataset
+classes = ('1', '2', '3', '4', '5')  # Change the classes based on the dataset
 plotname = 'Multi_variate'+'_confusion_matrix'+'.png'
 plot_confusion_matrix(model, testset, classes, device, plotname)

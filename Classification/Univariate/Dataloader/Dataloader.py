@@ -10,7 +10,7 @@ The codes in this following script will be used for the publication of the follo
 @any reuse of this code should be authorized by the first owner, code author
 
 """
-#%% Libraries required:
+# %% Libraries required:
 import torch
 from torch.utils.data import Dataset
 import pandas as pd
@@ -34,16 +34,16 @@ class Mechanism(Dataset):
         self.sequences = sequences
 
     def __len__(self):
+
         return len(self.sequences)
 
     def __getitem__(self, idx):
-        sequence_1, sequence_2, label = self.sequences[idx]
-        sequence_1 = torch.Tensor(sequence_1)
-        sequence_2 = torch.Tensor(sequence_2)
-        sequence1 = sequence_1.view(1, -1)
-        sequence2 = sequence_2.view(1, -1)
-        sequence = torch.cat((sequence1, sequence2), 0)
+
+        sequence, label = self.sequences[idx]
+        sequence = torch.Tensor(sequence)
+        sequence = sequence.view(1, -1)
         label = torch.tensor(label).long()
+        sequence, label
         return sequence, label
 
 
@@ -101,15 +101,13 @@ def data_pipeline(Material, total_path, windowsize):
 
 
 def Data_torch(classspace, Featurespace):
-    
-    
     """
     Preprocesses the data and creates train and test sets for PyTorch DataLoader.
 
     Args:
         classspace (numpy.ndarray): The categorical labels for the data.
         Featurespace (numpy.ndarray): The first set of features.
-        
+
     Returns:
         tuple: A tuple containing the train and test sets as PyTorch DataLoader objects.
     """
@@ -141,7 +139,3 @@ def Data_torch(classspace, Featurespace):
     sequences = Mechanism(sequences)
 
     return sequences
-
-
-
-

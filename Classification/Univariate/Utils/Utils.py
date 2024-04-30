@@ -9,7 +9,7 @@ The codes in this following script will be used for the publication of the follo
 @any reuse of this code should be authorized by the first owner, code author
 
 """
-#%% Libraries required:
+# %% Libraries required:
 
 import numpy as np
 import matplotlib
@@ -96,6 +96,7 @@ def plots(iteration, Loss_value, Total_Epoch, Accuracy, Learning_rate, Training_
     """
 
     Accuracyfile = str(Material)+'Accuracy'+'.npy'
+    Lossfile = str(Material)+'Loss_value'+'.npy'
     np.save(Accuracyfile, Accuracy, allow_pickle=True)
     np.save(Lossfile, Loss_value, allow_pickle=True)
 
@@ -164,10 +165,10 @@ def plots(iteration, Loss_value, Total_Epoch, Accuracy, Learning_rate, Training_
 def count_parameters(model):
     """
     Counts the total number of trainable parameters in a given model.
-    
+
     Args:
         model (torch.nn.Module): The model for which the parameters need to be counted.
-        
+
     Returns:
         int: The total number of trainable parameters in the model.
     """
