@@ -10,7 +10,7 @@ The codes in this following script will be used for the publication of the follo
 @any reuse of this code should be authorized by the first owner, code author
 
 """
-#libraries to import
+# libraries to import
 
 import time
 import torch
@@ -45,20 +45,20 @@ from Classifiers.Logistic_regression import *
 from Classifiers.XGBoost import *
 from Visualization import *
 # %%
-# %%
+
 # Clearing the cache
 torch.cuda.empty_cache()
 torch.manual_seed(2020)
 np.random.seed(2020)
 random.seed(2020)
 
-#%%
+# %%
 # GPU Device configuration
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 if device.type == "cuda":
     torch.cuda.get_device_name()
-#%%
+# %%
 # Hyperparameters for the model training
 embedding_dims = 16
 batch_size = 256
@@ -68,13 +68,11 @@ Material_1 = "D1"
 Material_2 = "D2"
 
 # %%
-
-# %%
-# Defining the path for the data  ---> Folder path  
+# Defining the path for the data  ---> Folder path
 total_path = r"C:\Users\srpv\Desktop\Git\Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion\Data"
-featurefile_1 = 'D1_rawspace_5000.npy'  
-featurefile_2 = 'D2_rawspace_5000.npy'  
-classfile = 'D1_classspace_5000.npy'  
+featurefile_1 = 'D1_rawspace_5000.npy'
+featurefile_2 = 'D2_rawspace_5000.npy'
+classfile = 'D1_classspace_5000.npy'
 
 featurefile_1 = (os.path.join(total_path, featurefile_1))
 featurefile_2 = (os.path.join(total_path, featurefile_2))
@@ -89,8 +87,8 @@ trainset, testset = Data_torch(classspace, Featurespace_1, Featurespace_2)
 
 # %%
 
-def get_lr(optimizer):
 
+def get_lr(optimizer):
     """
     Returns the learning rate of the optimizer.
 
@@ -118,7 +116,7 @@ scheduler = StepLR(optimizer, step_size=50, gamma=0.25)
 criterion = CircleLoss(m=0.25, gamma=25)
 model.train()
 
-#%%
+# %%
 # Training the model
 Loss_value = []
 Learning_rate = []
@@ -225,7 +223,7 @@ plt.savefig(plot_1, dpi=600, bbox_inches='tight')
 plt.show()
 plt.clf()
 
-#%%
+# %%
 # Plotting the learning rate
 plt.rcParams.update({'font.size': 10})
 plt.figure(figsize=(6, 3))
@@ -244,10 +242,18 @@ plt.show()
 # %%
 # Counting the number of parameters
 count_parameters(model)
+# Visualization of the data
+folder_created = os.path.join('Figures/', (str(Material_1)+str(Material_2)))
+print(folder_created)
+try:
+    os.makedirs(folder_created, exist_ok=True)
+    print("Directory created....")
+except OSError as error:
+    print("Directory already exists....")
 # %%
 # Generalization of the model
 X_train, X_test, y_train, y_test = generalization(
-    Material_1, Material_2, trainset, testset, total_path, model, device)
+    Material_1, Material_2, trainset, testset, folder_created, model, device)
 
 X_train = pd.DataFrame(X_train)
 X_test = pd.DataFrame(X_test)
@@ -275,14 +281,7 @@ classspace = data.iloc[:, -1].to_numpy()
 X_train, X_test, y_train, y_test, = train_test_split(rawspace, classspace, test_size=0.3)
 
 # %%
-# Visualization of the data
-folder_created = os.path.join('Figures/', (str(Material_1)+str(Material_2)))
-print(folder_created)
-try:
-    os.makedirs(folder_created, exist_ok=True)
-    print("Directory created....")
-except OSError as error:
-    print("Directory already exists....")
+
 
 plots(X_train, y_train, (str(Material_1)+str(Material_2)), folder_created)
 classes = np.unique(y_train)

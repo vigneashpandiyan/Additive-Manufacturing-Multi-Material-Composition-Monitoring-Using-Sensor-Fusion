@@ -10,7 +10,7 @@ The codes in this following script will be used for the publication of the follo
 @any reuse of this code should be authorized by the first owner, code author
 
 """
-#libraries to import
+# libraries to import
 from Utils import *
 from Network import *
 from Dataloader import *
@@ -20,7 +20,7 @@ from Visualization import *
 from matplotlib import animation
 
 
-def generalization(Material_1, Material_2, trainset, testset, total_path, model, device):
+def generalization(Material_1, Material_2, trainset, testset, folder_created, model, device):
 
     # Compute embeddings for the trainset and testset
     train_results, train_labels = compute_embeddings(
@@ -63,5 +63,3 @@ def generalization(Material_1, Material_2, trainset, testset, total_path, model,
     ani.save(graph_name, writer=animation.PillowWriter(fps=20))
 
     return train_results, test_results, train_labels, test_labels
-
-
