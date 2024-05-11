@@ -3,7 +3,7 @@ Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contras
 
 
 # Journal link
-https://doi.org/10.1016/j.jmatprotec.2023.118144
+https://scholar.google.com.sg/citations?user=7bnvbNYAAAAJ&hl=en
 
 # Overview
 
