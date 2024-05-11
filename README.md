@@ -23,7 +23,6 @@ In summary, this research has centered on the analysis of AE signals and the int
 ![image](https://github.com/vigneashpandiyan/Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion/assets/39007209/e4834045-02e1-491e-81e3-2f4d62a7c3c3)
 
 
-
 # Code
 ```bash
 git clone https://github.com/vigneashpandiyan/Additive-Manufacturing-Multi-Material-Composition-Monitoring-Using-Sensor-Fusion
@@ -33,14 +32,10 @@ python Main.py
 
 # Citation
 ```
-@article{PANDIYAN2023118144,
+@article{
 title = {Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in LPBF Process},
-journal = {Journal of Manufacturing Processes},
-pages = {118144},
-year = {2023},
-issn = {0924-0136},
-doi = {https://doi.org/10.1016/j.jmatprotec.2023.118144},
-url = {https://www.sciencedirect.com/science/article/pii/S0924013623002893},
-author = {Vigneashwara Pandiyan and Rafał Wróbel and Christian Leinenbach and Sergey Shevchik},
-keywords = {Laser Powder Bed Fusion, Process Monitoring, Empirical Mode Decomposition, Acoustic Emission, Explainable AI (XAI)},
+journal = {Virtual and Physical Prototyping},
+year = {2024},
+author = {Vigneashwara Pandiyan and Antonios Baganis  and Roland Axel Richter and Rafał Wróbel and Christian Leinenbach},
+keywords = {Laser Powder Bed Fusion, Multi-material Process Monitoring, Acoustic Emission, Optical Emission, Contrastive Learning)},
 }
