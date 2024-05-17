@@ -3,7 +3,7 @@ Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contras
 
 
 # Journal link
-https://scholar.google.com.sg/citations?user=7bnvbNYAAAAJ&hl=en
+https://doi.org/10.1080/17452759.2024.2356080
 
 # Overview
 
@@ -32,6 +32,7 @@ python Main.py
 @article{
 title = {Qualify-As-You-Go: Sensor Fusion of Optical and Acoustic Signatures with Contrastive Deep Learning for Multi-Material Composition Monitoring in LPBF Process},
 journal = {Virtual and Physical Prototyping},
+doi={https://doi.org/10.1080/17452759.2024.2356080}
 year = {2024},
 author = {Vigneashwara Pandiyan and Antonios Baganis  and Roland Axel Richter and Rafał Wróbel and Christian Leinenbach},
 keywords = {Laser Powder Bed Fusion, Multi-material Process Monitoring, Acoustic Emission, Optical Emission, Contrastive Learning)},
